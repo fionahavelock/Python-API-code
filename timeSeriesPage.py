@@ -12,26 +12,27 @@ Next stage is link the stattion number to the location, with dictionaries
 
 timeSeriesData = getTimeSeries('cmr', '45001')
 df = pd.DataFrame(data=timeSeriesData)
-dropboxValues =  {"Huttons Ambo": 2001, "Leith": 3001, "Kidwelly": 1001}
+#dropboxValues =  {"Huttons Ambo": 2001, "Leith": 3001, "Kidwelly": 1001}
 
-app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+#app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-app.layout = html.Div([
+waterFlowPage = html.Div([
 
   
     html.Div([
         dcc.Dropdown(['cmr', 'amax-flow', 'pot-flow', 'gauging-flow'],
-        placeholder="Select a data type",
+        placeholder="Select a flow type",
         id='flowDropdown',)
     
     ]),
+    html.Br(),
     html.Div([
         dcc.Dropdown( options = [
-       {'label': 'Hutton', 'value': '2001'},
+       {'label': 'Tyne Spilmersford', 'value': '20003'},
        {'label': 'Kidwelly', 'value': '3001'},
        {'label': 'San Francisco', 'value': '1001'},
         ],
-        placeholder="Select a station ID",
+        placeholder="Select a location",
         id='IDdropdown',)
     ]),
     html.Div([
@@ -54,6 +55,7 @@ app.layout = html.Div([
             id='month-slider'
             )
     ]),
+    html.Br(),
     html.Div([
         dash_table.DataTable(
         id='metaDataTable',
@@ -62,7 +64,7 @@ app.layout = html.Div([
     ])
 ])
 
-
+"""
 
 @app.callback(
     Output("alert-noData", "is_open"),
@@ -99,19 +101,7 @@ def getUserOptions(flowType, stationNumber, selected_month):
 
 
 """
-@app.callback(
-    Output('graph-with-slider', 'figure'),
-    Input('month-slider', 'value'))
-def update_figure(selected_month):
-    filtered_df = df[df.Month == selected_month]
 
-    fig = px.scatter(filtered_df, x="Year", y="Value", size="Value")
 
-    fig.update_layout(transition_duration=500)
-
-    return fig
-
-"""
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
+#if __name__ == '__main__':
+    #app.run_server(debug=True)

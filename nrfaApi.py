@@ -46,7 +46,42 @@ def getTimeSeries(flowType, stationNumber):
             dataList.append(tempDictionary.copy())
         index +=1
     return dataList
+
+def getTimeSeriesForcasting(flowType, stationNumber):
+    jsonData = queryAPI(base_url + timeSeries + dataObject + "&data-type=" + flowType + "&station=" + stationNumber)
+    #make every even number a column and every odd number a column
+    index = 0
+    dataList = []
+    #create empty dictionary
+    tempDictionary = {}
+    for i in jsonData['data-stream']:
+        if index % 2 == 0:
+            # dont spilt string so it can be made into a time series prediction 
+            #date = i.split("-")
+            tempDictionary['Year Month'] = i
+            #tempDictionary['Month'] = int(date[1])
+
+        else:
+            tempDictionary['Value'] = i
+            dataList.append(tempDictionary.copy())
+        index +=1
+    return dataList
+
+
     
+def getMapData(stationNumber):
+    jsonMapData = queryAPI(base_url + metaData + "station=" + stationNumber + "&" + dataObject + "&fields=id,name,river,latitude,longitude")
+    mapDatafromJson = jsonMapData['data'][0]
+    dataList = []
+    tempDictionary ={}
+    for key,value in mapDatafromJson.items():
+        tempDictionary['Key'] = key
+        if value == None:
+            value = 'N/A'
+        tempDictionary['Value'] = value
+        dataList.append(tempDictionary.copy())
+    #mapdataframe = pd.DataFrame(dataList)
+    return dataList
     
 #https://nrfaapps.ceh.ac.uk/nrfa/ws/station-info?station=43009&format=json-object&fields=id,name,grid-reference,lat-long,river
 def getMetaData(stationNumber):
@@ -67,8 +102,9 @@ def getMetaData(stationNumber):
 #return metaDatafromJson 
 
 
-
-getTimeSeries('pot-flow', '45001')
+getTimeSeriesForcasting("gauging-flow", "20003")
+#getTimeSeries('pot-flow', '45001')
 
 #getMetaData("45001")
 
+#getMapData("20003")
